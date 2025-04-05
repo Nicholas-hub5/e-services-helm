@@ -13,19 +13,19 @@ Landing Page Sample:
 ## Project Layout
 
 ```
-emmanuel-services/
-├── index.html               # Frontend form with Emmanuel’s branding
-├── backend/
-│   └── app.py               # Flask API for form submission handling
-├── Dockerfile               # Flask backend Docker image
-├── helm-chart/
+emmanuel-services/              
+├── Dockerfile                # Flask backend Docker image
+├── emmanuel-web-helm-chart/
 │   ├── Chart.yaml
 │   ├── values.yaml
 │   └── templates/
 │       ├── deployment.yaml
 │       ├── service.yaml
-│       ├── postgres-deployment.yaml
-│       └── postgres-service.yaml
+├── static/
+│   └── emmanuel-thumbnail.jpg  # Emmanuel’s branding 
+├── templates/
+│   └── index.html              # Frontend form with Emmanuel’s branding
+├── app.py                      # Flask API for form submission handling
 ```
 
 ## Prerequisites
@@ -34,7 +34,6 @@ emmanuel-services/
 - Minikube
 - Helm
 - kubectl
-- PostgreSQL Client (optional, for debugging)
 
 ## Step-by-Step Deployment Instructions
 
@@ -52,10 +51,16 @@ Minikube gives us a local Kubernetes cluster for dev/testing.
 Dockerfile:
 
 ```Dockerfile
-FROM python:3.10-slim
+FROM python:3.9
+
 WORKDIR /app
-COPY backend/ /app/
-RUN pip install flask psycopg2-binary
+
+COPY templates/ /app/templates/
+COPY static/ /app/static/
+COPY app.py .
+
+RUN pip install flask
+
 CMD ["python", "app.py"]
 ```
 
@@ -69,18 +74,21 @@ This image handles POST requests from the HTML form and writes data to PostgreSQ
 
 ### 3. Configure Helm Chart
 
-Chart.yaml
+Create a **Chart.yaml** file
 
 ```yaml
 apiVersion: v2
 name: emmanuel-services
-description: Emmanuel App with PostgreSQL using Helm
+description: Helm chart for deploying the Emmanuel Services web application
 version: 0.1.0
 ```
 
-values.yaml
+### 4. Configure Helm Values
+Create a **values.yaml** file
 
 ```yaml
+replicaCount: 1
+
 image:
   repository: emmanuel-web-app
   tag: "1.0"
@@ -91,77 +99,54 @@ service:
   port: 80
 ```
 
-### 4. PostgreSQL Deployment
-
-postgres-deployment.yaml
+### 5. Configure Template Files
+- 1. Create a **deployment.yaml** file
 
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: emmanuel-postgres
+  name: emmanuel-services
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: emmanuel-postgres
+      app: emmanuel-services
   template:
     metadata:
       labels:
-        app: emmanuel-postgres
+        app: emmanuel-services
     spec:
       containers:
-        - name: postgres
-          image: postgres:13
-          env:
-            - name: POSTGRES_DB
-              value: "emmanueldb"
-            - name: POSTGRES_USER
-              value: "emmanueluser"
-            - name: POSTGRES_PASSWORD
-              value: "emmanuelpass"
+        - name: emmanuel-web
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - containerPort: 5432
+            - containerPort: 80
 ```
 
-postgres-service.yaml
+- 2. Create a **service.yaml** file
 
 ```yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: emmanuel-postgres
+  name: emmanuel-services
 spec:
+  type: {{ .Values.service.type }}
   selector:
-    app: emmanuel-postgres
+    app: emmanuel-services
   ports:
-    - port: 5432
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: 80
 ```
 
-### 5. Deploy Backend & PostgreSQL using Helm
+
+### 6. Deploy using Helm
 
 ```bash
-helm install emmanuel-services ./helm-chart
-```
-
-### 6. Create the Table in PostgreSQL
-
-```bash
-kubectl exec -it deploy/emmanuel-postgres -- bash
-psql -U emmanueluser -d emmanueldb
-```
-
-Inside PostgreSQL shell:
-
-```sql
-CREATE TABLE leads (
-    id SERIAL PRIMARY KEY,
-    first_name TEXT,
-    last_name TEXT,
-    phone TEXT,
-    email TEXT,
-    service TEXT
-);
+helm install emmanuel-services ./emmanuel-web-helm-chart
 ```
 
 ### 7. Access the App
@@ -176,13 +161,22 @@ Make sure your Flask app endpoint matches the frontend fetch URL (e.g. /signup).
 
 ## Why These Steps Matter
 
-| Step      | Purpose                                       |
-|-----------|-----------------------------------------------|
-| Docker    | Containerizes the backend logic               |
-| Flask     | Handles POST request logic and DB connection  |
-| PostgreSQL| Stores submitted leads                        |
-| Helm      | Manages Kubernetes configuration declaratively|
-| Minikube  | Local dev environment to test the full setup  |
+| Step             | Purpose                                        |
+|------------------|----------------------------------------------- |
+| Docker           | Containerizes the backend logic                |
+| Flask            | Handles POST request logic and DB connection   |
+| Helm             | Manages Kubernetes configuration declaratively |
+| Minikube         | Local dev environment to test the full setup   |
+| values.yaml      | Defines configuration values                   |
+| deployment.yaml  | A template that uses values from values yaml   |
+| service.yaml     | Another template that uses values              |
+| Chart.yaml       | Metadata about the chart (name, version, etc.) |
+| app.py           | Backend code, usually written in Python (Flask)|
+| index.html       | Displayed in browser                           |
+| Dockerfile       | Container builder packaging for deployment     |
+| static/          | Assets for the frontend referencing index.html |
+
+---
 
 ## Cleanup
 
