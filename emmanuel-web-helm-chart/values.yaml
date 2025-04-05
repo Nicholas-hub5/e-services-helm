@@ -1,8 +1,14 @@
+replicaCount: 1
+
 image:
-  repository: t2s-web-app
+  repository: emmanuel-web-app
   tag: "1.0"
   pullPolicy: IfNotPresent
 
 service:
   type: NodePort
   port: 80
+
+ingress:
+  enabled: false
+

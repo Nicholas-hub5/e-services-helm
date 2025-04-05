@@ -1,5 +1,11 @@
-FROM python:3.10-slim
+FROM python:3.9
+
 WORKDIR /app
-COPY backend/ /app/
-RUN pip install flask psycopg2-binary
+
+COPY templates/ /app/templates/
+COPY static/ /app/static/
+COPY app.py .
+
+RUN pip install flask
+
 CMD ["python", "app.py"]
