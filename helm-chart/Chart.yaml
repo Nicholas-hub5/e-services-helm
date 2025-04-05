@@ -1,0 +1,4 @@
+apiVersion: v2
+name: t2s-services
+description: T2S App with PostgreSQL using Helm
+version: 0.1.0

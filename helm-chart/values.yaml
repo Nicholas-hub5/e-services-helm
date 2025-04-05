@@ -1,0 +1,8 @@
+image:
+  repository: t2s-web-app
+  tag: "1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: NodePort
+  port: 80

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: t2s-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: t2s-postgres
+  template:
+    metadata:
+      labels:
+        app: t2s-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:13
+          env:
+            - name: POSTGRES_DB
+              value: "t2sdb"
+            - name: POSTGRES_USER
+              value: "t2suser"
+            - name: POSTGRES_PASSWORD
+              value: "t2spassword"
+          ports:
+            - containerPort: 5432
