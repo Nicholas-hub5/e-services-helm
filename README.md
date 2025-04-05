@@ -189,3 +189,9 @@ minikube stop
 
 [Schedule with Emmanuel](https://here4you.setmore.com)
 
+---
+MIT License © 2025 Emmanuel Naweji
+
+You are free to use, copy, modify, merge, publish, distribute, sublicense, or sell copies of this software and its associated documentation files (the “Software”), provided that the copyright and permission notice appears in all copies or substantial portions of the Software.
+
+This Software is provided “as is,” without any warranty — express or implied — including but not limited to merchantability, fitness for a particular purpose, or non-infringement. In no event will the authors be liable for any claim, damages, or other liability arising from the use of the Software.
