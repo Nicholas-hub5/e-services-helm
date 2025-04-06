@@ -1,5 +1,5 @@
 
-# Emmanuel Services – Work with Emmanuel (Deployed on Minikube using Helm & PostgreSQL)
+# Emmanuel Services – Work with Emmanuel (Deployed on Minikube using Helm)
 
 This project shows how to deploy a full-stack web application using Helm and Minikube, where client form submissions are stored in a PostgreSQL database. The form is presented via an HTML frontend that promotes working with Emmanuel Naweji.
 
