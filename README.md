@@ -1,4 +1,3 @@
-
 # Emmanuel Services – Work with Emmanuel (Deployed on Minikube using Helm)
 
 This project shows how to deploy a full-stack web application using Helm and Minikube. The form is presented via an HTML frontend that promotes working with Emmanuel Naweji.
@@ -35,6 +34,8 @@ emmanuel-services/
 - Helm
 - kubectl
 
+![Checking the Above Are Installed](./assets/helm-2.png).
+
 ## Step-by-Step Deployment Instructions
 
 ### 1. Start Minikube
@@ -43,6 +44,7 @@ emmanuel-services/
 minikube start
 eval $(minikube docker-env)
 ```
+![Starting Minikube](./assets/helm-4.png).
 
 Minikube gives us a local Kubernetes cluster for dev/testing.
 
@@ -69,6 +71,9 @@ Build it:
 ```bash
 docker build -t emmanuel-web-app:1.0 .
 ```
+
+![Building the Image](./assets/helm-5.png).
+
 
 This image handles POST requests from the HTML form and writes data to PostgreSQL.
 
@@ -149,11 +154,17 @@ spec:
 helm install emmanuel-services ./emmanuel-web-helm-chart
 ```
 
+![Deploying the Services using Helm](./assets/helm-6.png).
+
+
 ### 7. Access the App
 
 ```bash
 minikube service emmanuel-services --url
 ```
+
+![Starting Minikube](./assets/helm-7.png).
+
 
 Open the URL in your browser to access the Work with Emmanuel form.
 
@@ -176,6 +187,9 @@ Make sure your Flask app endpoint matches the frontend fetch URL (e.g. /signup).
 | Dockerfile       | Container builder packaging for deployment     |
 | static/          | Assets for the frontend referencing index.html |
 
+
+![What You see on the Browser](./assets/helm-10.png).
+
 ---
 
 ## Cleanup
@@ -184,6 +198,8 @@ Make sure your Flask app endpoint matches the frontend fetch URL (e.g. /signup).
 helm uninstall emmanuel-services
 minikube stop
 ```
+
+![Starting Minikube](./assets/helm-11.png).
 
 ---
 
