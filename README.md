@@ -1,7 +1,7 @@
 
 # Emmanuel Services – Work with Emmanuel (Deployed on Minikube using Helm)
 
-This project shows how to deploy a full-stack web application using Helm and Minikube, where client form submissions are stored in a PostgreSQL database. The form is presented via an HTML frontend that promotes working with Emmanuel Naweji.
+This project shows how to deploy a full-stack web application using Helm and Minikube. The form is presented via an HTML frontend that promotes working with Emmanuel Naweji.
 
 ## Preview
 
@@ -184,6 +184,15 @@ Make sure your Flask app endpoint matches the frontend fetch URL (e.g. /signup).
 helm uninstall emmanuel-services
 minikube stop
 ```
+
+---
+
+## Next Steps
+- Provide a PosgreSQL database to store data. 
+- Move the Infrastructure to AWS (and other Cloud Platforms. E.g.: Azure, Google, etc.). 
+- Make the infra scalable leveraging Cloud Native Kubernetes. 
+
+---
 
 ## Book a Free Consultation
 
